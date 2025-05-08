@@ -6,8 +6,9 @@ import { TextInput, Text as Texto, Divider, Button, IconButton} from 'react-nati
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useToast } from 'react-native-toast-notifications';
 import { uploadComprobante } from '../hooks';
+import { DialogoEnv,DialogoOk } from './components/Dialogos';
 import { currencyFormat } from './components/helper';
-
+import NetInfo from '@react-native-community/netinfo';
 import globalStyles from '../styles/global';
 
 const Comprobantes = ({ route }) => {
@@ -16,6 +17,9 @@ const Comprobantes = ({ route }) => {
     const [datoscredito, setDatoscredito] = useState([]);
     const [inicioD, setValinicioD] = useState(false);
     const [valorpgo, setValorpgo] = useState(0);
+    const [visible, setVisible] = useState(false);
+    const [visibleOk, setVisibleOk] = useState(false);
+     const [netInfo, setNetInfo] = useState({});
     const { creditos } = route.params;
     // React mensajes toast
     const toast = useToast();
@@ -24,6 +28,23 @@ const Comprobantes = ({ route }) => {
         setDatoscredito(creditos);
         console.log(creditos);
      }, []);
+
+     useEffect(() => {
+        // Subscribe to network state updates
+        const unsubscribe = NetInfo.addEventListener((state) => {
+            setNetInfo({
+                Connectiontype: state.type,
+                IsInternetReachable: state.isInternetReachable,
+                Isconnected: state.isConnected,
+                IsWifiEnabled: state.isWifiEnabled,
+            }
+            );
+        });
+        return () => {
+            unsubscribe();
+        };
+
+    }, []);
 
     const _onValueChange = (val) => {
             handleimagengaleria();
@@ -58,24 +79,33 @@ const handleimagengaleria = () => {
             return;
         }
 
-        setValinicioD(true);
+        if ((netInfo.Connected === false && netInfo.WifiEnabled === false))
+            {
+             toast.show('Ha ocurrido un Error de conexion intentelo nuevamente', {
+                 type: 'danger',
+                 duration: 2000,
+             });
+             return;
+           }
 
+        //setValinicioD(true);
+        setVisible(true);
         uploadComprobante(file, valorpgo)
             .then(resp => {
                 console.log(resp);
                 const response = JSON.parse(resp);
                  if (response.success === true) {
+                    setValorpgo('');
                     setValinicioD(false);
-                     setValorpgo('');
-                   toast.show('El comprobante fue enviado Correctamente/O recibo foi enviado corretamente.',
-                       {
-                            type: 'success',
-                           duration: 2000,
-                       });
-                     }
+                    setVisible(false);
+                    setVisibleOk(true);
+                  // toast.show('El comprobante fue enviado Correctamente/O recibo foi enviado corretamente.',
+                   //    {type: 'success', duration: 2000 });
+               }
             }).catch((e) => {
                 console.log(e);
                 setValinicioD(false);
+                setVisible(false);
                 Alert.alert('catch' + e);
             });
     };
@@ -156,6 +186,14 @@ const handleimagengaleria = () => {
                </View>
             {/* container o contenido */}
          </View>
+          <DialogoEnv
+          visible={visible}
+          setVisible={setVisible}
+          />
+           <DialogoOk
+            visibleOk={visibleOk}
+            setVisibleOk={setVisibleOk}
+          />
     </>);
 };
 
@@ -236,9 +274,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
       },
     left: {
-        width: '80%',
+        width: '84%',
       },
-      right: {
+    right: {
         marginTop:1,
         marginLeft:5,
         width: '15%',
