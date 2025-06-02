@@ -60,7 +60,7 @@ export const uploadComprobante = async (file, valorpgo,TipoUP) => {
 
  const fileToUpload = {
    uri: Platform.OS === 'ios' ? URI.replace('file://', '') : URI,
-   type: TYPE || 'image/jpeg',
+   type: TYPE || 'image/*',
    name:  NAME || 'upload.jpg',
  };
 

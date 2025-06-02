@@ -70,12 +70,12 @@ const Comprobantes = ({ route }) => {
                 console.log('No se recibieron archivos.');
               }
               // Limpia los archivos compartidos después de procesarlos
-              //ReceiveSharingIntent.clearReceivedFiles();
+              ReceiveSharingIntent.clearReceivedFiles();
             },
             (error) => {
               console.error('Error al recibir archivos:', error);
               // Asegúrate de limpiar aunque ocurra un error
-              //ReceiveSharingIntent.clearReceivedFiles();
+              ReceiveSharingIntent.clearReceivedFiles();
             },
             'ShareMedia'
           );
@@ -141,6 +141,13 @@ const handleimagengaleria = () => {
              });
     };
 
+    const handleInputChange = (text) => {
+        // Validar que el valor sea un número entero
+         if (/^\d+$/.test(text) || text === '') {
+            setValorpgo(text);
+        }
+      };
+
     return (<>
         <View style={globalStyles.contenedor}>
             <View style={globalStyles.card}>
@@ -158,10 +165,10 @@ const handleimagengaleria = () => {
                 <View style={styles.row}>
                     <View style={styles.left}>
                         <TextInput
-                        keyboardType="numerit"
+                        keyboardType="number-pad"
                         mode="outlined"
                         label="Valor Abono"
-                        onChangeText={valor => setValorpgo(valor)}
+                        onChangeText={handleInputChange}
                         value={valorpgo}
                         left={<TextInput.Affix text="$" />}
                         right={<TextInput.Affix

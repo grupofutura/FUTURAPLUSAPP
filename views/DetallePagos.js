@@ -45,7 +45,7 @@ const DetallePagos = ({route}) => {
                         <Image size={100} source={require('../assets/Imgticket.webp')}/>
                     </Text>
                </View>
-            <View>.].\][ ]
+            <View>
               <View style={styles.header}>
                     <Text style={globalStyles.titulocard}>
                     <Text style={styles.subtitulo_s} variant="labelMedium">{'R$'}</Text>

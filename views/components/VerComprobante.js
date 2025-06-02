@@ -46,7 +46,7 @@ const VerComprobante = ({ visibleC, setVisibleC}) => {
               color={isV3 ? MD3Colors.primary95 : MD2Colors.white}
              onPress={close}
            >
-           Aceptar
+           Cerrar
             </Button>
          </Dialog.Actions>
       </Dialog>
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
   container: {
     maxHeight: 500,
     paddingHorizontal: 10,
+    paddingVertical:-10,
   },
   cardfoto: {
     marginHorizontal: 1,
