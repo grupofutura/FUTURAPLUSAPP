@@ -4,18 +4,31 @@ import {View,Text, StyleSheet} from 'react-native';
 import {Text as Texto, Button, IconButton} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import VistaComprobante from '../components/VerComprobante';
+import { getCuotaDetalles } from '../../hooks';
+import { currencyFormat, formatFecha } from '../components/helper';
 import globalStyles from '../../styles/global';
 
 const ListarPagos = ({ data }) => {
 const [visibleC, setVisibleC] = useState(false);
+//const [datoPagos, setDatoPagos] = useState({});
+const [PagoSaldo, setPagoSaldo] = useState(0);
 const navigation = useNavigation();
-   return(
-        <>
+
+const handleDetallePgo = async (Id) => {
+   getCuotaDetalles(Id)
+              .then(pagosdetalle => {
+                setPagoSaldo(pagosdetalle?.abono?.saldo);
+              });
+    return currencyFormat(PagoSaldo);
+};
+
+
+   return(<>
         <View style={{ width: '100%', marginTop: 15, marginBottom: 5 }}>
        <Text
          key={'pgo' + data.id.toString()}
          variant="headlineMedium"
-         style={globalStyles.enlace}>{`Parcela/Abono: $${data.valor}`}
+         style={globalStyles.enlace}>{`Parcela/Abono: R${currencyFormat(data.valor)}`}
        </Text>
        <View style={styles.row}>
          <View style={styles.left}>
@@ -23,7 +36,7 @@ const navigation = useNavigation();
            <Texto
              variant="titleSmall"
              key={'saldo' + data.id.toString()}>
-             ${100}
+             {handleDetallePgo(data.id.toString())}
            </Texto>
          </View>
          <View style={styles.right}>
@@ -31,7 +44,7 @@ const navigation = useNavigation();
            <Texto
              variant="titleSmall"
              key={'fecha' + data.id.toString()}>
-             {data.data.toString()}
+             {formatFecha(data.data)}
            </Texto>
          </View>
        </View>
@@ -60,8 +73,7 @@ const navigation = useNavigation();
          visibleC={visibleC}
          setVisibleC={setVisibleC} />
      </View>
-    </>
-  );
+    </>);
 };
 const styles = StyleSheet.create({
     row: {

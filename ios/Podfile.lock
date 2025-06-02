@@ -1358,6 +1358,8 @@ PODS:
     - Yoga
   - react-native-netinfo (11.4.1):
     - React-Core
+  - react-native-receive-sharing-intent (2.0.0):
+    - React-Core
   - react-native-safe-area-context (5.4.0):
     - DoubleConversion
     - glog
@@ -1956,6 +1958,7 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-receive-sharing-intent (from `../node_modules/react-native-receive-sharing-intent`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - "react-native-vector-icons (from `../node_modules/@react-native-vector-icons/common`)"
@@ -2085,6 +2088,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-receive-sharing-intent:
+    :path: "../node_modules/react-native-receive-sharing-intent"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
@@ -2211,6 +2216,7 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: c8ed30f8ec30affbc73411c54207bd67b1125bbb
   react-native-image-picker: fba7ab3cefce56618bc646269f22f02df3fcc375
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
+  react-native-receive-sharing-intent: cbd6daac89f5e84c231fe0d8e5453490cc431193
   react-native-safe-area-context: 562163222d999b79a51577eda2ea8ad2c32b4d06
   react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
   react-native-vector-icons: 9bc211082d39578babf726855c2f7f01ae3e9834

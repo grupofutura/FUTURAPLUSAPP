@@ -112,12 +112,30 @@ const globalStyles = StyleSheet.create({
     marginTop:5,
     resizeMode: 'contain',
   },
+  comprobanteImg: {
+    width:'100%',
+    height:600,
+    alignItems: 'center',
+    //marginLeft: '1%',
+    //marginBottom: 1,
+    marginTop:5,
+    resizeMode: 'contain',
+  },
   fileCprob: {
     alignItems: 'center',
     width:'100%',
-    height:900,
+    height:600,
     marginLeft: 1,
     marginBottom: 1,
+  },
+  filestak: {
+    width:400,
+    height:400,
+    alignItems: 'center',
+    marginLeft: '0%',
+    marginBottom: 1,
+    marginTop:5,
+    //resizeMode: 'contain',
   },
 });
 

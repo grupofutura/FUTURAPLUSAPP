@@ -2,7 +2,6 @@ import { ActivityIndicator, Platform, View, StyleSheet } from 'react-native';
 import {
   Button,
   Text,
-  Paragraph,
   Dialog,
   Portal,
   useTheme,
@@ -40,7 +39,7 @@ export const DialogoOk = ({visibleOk, setVisibleOk}) => {
       <Dialog.Title>Comprobante</Dialog.Title>
       <Dialog.Content>
         <View style={styles.flexing}>
-        <Text variant="bodyMedium">El comprobante fue enviado Correctamente/O recibo foi enviado corretamente</Text>
+        <Text variant="bodyMedium"hideDialog>El comprobante fue enviado Correctamente/O recibo foi enviado corretamente</Text>
         </View>
       </Dialog.Content>
       <Dialog.Actions>

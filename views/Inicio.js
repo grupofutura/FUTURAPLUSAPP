@@ -13,6 +13,7 @@ import {
 import ListarPagos from './components/ListarPagos';
 import ListarCredito from './components/ListarCredito';
 import { getMisCuotas } from '../hooks';
+import { currencyFormat } from './components/helper';
 import globalStyles from '../styles/global';
 
 const Inicio = () => {
@@ -43,8 +44,6 @@ const Inicio = () => {
   useEffect(() => {
     const _retrieveDataCreditos = async () => {
       const Prestamos = JSON.parse(await AsyncStorage.getItem('dataPrestamos'));
-      //console.log(Prestamos);
-      //setIdPres(Prestamos[0].id);
       setCredito(Prestamos);
       _onValueChange(Prestamos[0].id);
     };
@@ -73,12 +72,13 @@ const Inicio = () => {
                 CPF: {subtitulo}
                 </Texto>
          </View>
+         { creditos.length > 1 &&
         <View style={styles.chits}>
               <Texto>{
-                  creditos.length > 0 && <ListarCredito data={creditos} onValueChange={_onValueChange}/>
+                  creditos.length > 1 && <ListarCredito data={creditos} onValueChange={_onValueChange}/>
                   };
               </Texto>
-         </View>
+         </View>}
          <Divider />
          <View style={{flex: 3}}>
          <View style={styles.cardlist}>
@@ -109,7 +109,7 @@ const Inicio = () => {
                         mode="contained"
                         onPress={() => navigation.navigate('Comprobantes', { creditos })}
                       >
-                        {'Reportar Pix Equilíbrio/Saldo: R$'}{creditos[0]?.valorempre}
+                        {'Reportar Pix Equilíbrio/Saldo: R'}{currencyFormat(creditos[0]?.valorempre)}
                       </Button>
                 </View>
           </View>

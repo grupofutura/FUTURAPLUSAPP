@@ -1,9 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, ScrollView, StyleSheet, Alert } from 'react-native';
 import { TextInput, Text as Texto, Divider, Button, IconButton} from 'react-native-paper';
 import { launchImageLibrary } from 'react-native-image-picker';
+import ReceiveSharingIntent from 'react-native-receive-sharing-intent';
 import { useToast } from 'react-native-toast-notifications';
 import { uploadComprobante } from '../hooks';
 import { DialogoEnv,DialogoOk } from './components/Dialogos';
@@ -14,19 +16,23 @@ import globalStyles from '../styles/global';
 const Comprobantes = ({ route }) => {
     const [tempUri, setTempUri] = useState('');
     const [file, setFile] = useState('');
+   // const [sharedImage, setSharedImage] = useState(null);
     const [datoscredito, setDatoscredito] = useState([]);
     const [inicioD, setValinicioD] = useState(false);
     const [valorpgo, setValorpgo] = useState(0);
     const [visible, setVisible] = useState(false);
     const [visibleOk, setVisibleOk] = useState(false);
      const [netInfo, setNetInfo] = useState({});
+     const [tipoup, setTipoup] = useState(0);
     const { creditos } = route.params;
+
+    const navigation = useNavigation();
     // React mensajes toast
     const toast = useToast();
 
      useEffect(() => {
         setDatoscredito(creditos);
-        console.log(creditos);
+        //console.log(creditos);
      }, []);
 
      useEffect(() => {
@@ -46,9 +52,34 @@ const Comprobantes = ({ route }) => {
 
     }, []);
 
-    const _onValueChange = (val) => {
+    const _onValueChange = () => {
             handleimagengaleria();
     };
+
+    useEffect(() => {
+        ReceiveSharingIntent.getReceivedFiles(
+            (files) => {
+              if (files && files.length > 0) {
+                const [firstFile] = files;
+                const { filePath } = firstFile;
+                //console.log('Archivos recibidos:', files);
+                setTempUri('file://' + filePath);
+                setFile(files);
+                setTipoup(1);
+              } else {
+                console.log('No se recibieron archivos.');
+              }
+              // Limpia los archivos compartidos después de procesarlos
+              //ReceiveSharingIntent.clearReceivedFiles();
+            },
+            (error) => {
+              console.error('Error al recibir archivos:', error);
+              // Asegúrate de limpiar aunque ocurra un error
+              //ReceiveSharingIntent.clearReceivedFiles();
+            },
+            'ShareMedia'
+          );
+    },[]);
 
 const handleimagengaleria = () => {
         launchImageLibrary({
@@ -59,6 +90,7 @@ const handleimagengaleria = () => {
             const { uri } = resp.assets[0];
             setTempUri(uri);
             setFile(resp);
+            setTipoup(0);
         }).catch((e) => {
             console.log(e);
         });
@@ -88,26 +120,25 @@ const handleimagengaleria = () => {
              return;
            }
 
-        //setValinicioD(true);
         setVisible(true);
-        uploadComprobante(file, valorpgo)
-            .then(resp => {
-                console.log(resp);
-                const response = JSON.parse(resp);
-                 if (response.success === true) {
-                    setValorpgo('');
+        uploadComprobante(file, valorpgo, tipoup)
+             .then(resp => {
+                 console.log(resp);
+                 const response = JSON.parse(resp);
+               if (response.success === true) {
+                    setValorpgo(0);
                     setValinicioD(false);
                     setVisible(false);
                     setVisibleOk(true);
-                  // toast.show('El comprobante fue enviado Correctamente/O recibo foi enviado corretamente.',
-                   //    {type: 'success', duration: 2000 });
+                    setTipoup(0);
+                    navigation.navigate('Inicio');
                }
-            }).catch((e) => {
+         }).catch((e) => {
                 console.log(e);
                 setValinicioD(false);
                 setVisible(false);
-                Alert.alert('catch' + e);
-            });
+               Alert.alert('catch' + e);
+             });
     };
 
     return (<>
@@ -127,7 +158,7 @@ const handleimagengaleria = () => {
                 <View style={styles.row}>
                     <View style={styles.left}>
                         <TextInput
-                        type="numerit"
+                        keyboardType="numerit"
                         mode="outlined"
                         label="Valor Abono"
                         onChangeText={valor => setValorpgo(valor)}

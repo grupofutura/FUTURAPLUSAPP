@@ -28,7 +28,7 @@ export const CardContent = () => (
   );
 
 const Login = () => {
-    const [documento, setDocumento] = useState('530.760.890-32');
+    const [documento, setDocumento] = useState('');
     const [inicio, setValinicio] = useState(false);
     const [netInfo, setNetInfo] = useState({});
 
