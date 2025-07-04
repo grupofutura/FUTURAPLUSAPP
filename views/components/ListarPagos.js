@@ -4,25 +4,18 @@ import {View,Text, StyleSheet} from 'react-native';
 import {Text as Texto, Button, IconButton} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import VistaComprobante from '../components/VerComprobante';
-import { getCuotaDetalles } from '../../hooks';
+//import { getCuotaDetalles } from '../../hooks';
 import { currencyFormat, formatFecha } from '../components/helper';
 import globalStyles from '../../styles/global';
 
 const ListarPagos = ({ data }) => {
 const [visibleC, setVisibleC] = useState(false);
-//const [datoPagos, setDatoPagos] = useState({});
-const [PagoSaldo, setPagoSaldo] = useState(0);
+const [imageUrl, setImageUrl] = useState('');
 const navigation = useNavigation();
-
-const handleDetallePgo = async (Id) => {
-   getCuotaDetalles(Id)
-              .then(pagosdetalle => {
-                setPagoSaldo(pagosdetalle?.abono?.saldo);
-              });
-    return currencyFormat(PagoSaldo);
-};
-
-
+  const _onValueChangeComp = (url) => {
+      setImageUrl(url);
+      setVisibleC(true);
+  };
    return(<>
         <View style={{ width: '100%', marginTop: 15, marginBottom: 5 }}>
        <Text
@@ -36,7 +29,7 @@ const handleDetallePgo = async (Id) => {
            <Texto
              variant="titleSmall"
              key={'saldo' + data.id.toString()}>
-             {handleDetallePgo(data.id.toString())}
+            R{currencyFormat(data.saldo)}
            </Texto>
          </View>
          <View style={styles.right}>
@@ -64,14 +57,16 @@ const handleDetallePgo = async (Id) => {
              <IconButton
                icon="document"
                mode="contained"
-               onPress={() => setVisibleC(true)}
+               onPress={() => _onValueChangeComp(data.imageUrl)}
                size={30} />
            </Texto>
          </View>
        </View>
        <VistaComprobante
          visibleC={visibleC}
-         setVisibleC={setVisibleC} />
+         setVisibleC={setVisibleC}
+         comprobante={imageUrl}
+         />
      </View>
     </>);
 };

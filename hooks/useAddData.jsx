@@ -1,13 +1,24 @@
 import { Platform } from 'react-native';
-
+import messaging from '@react-native-firebase/messaging';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getToken = async () => {
+      try {
+          const token = await messaging().getToken();
+          console.log(token);
+          return token;
+      } catch (error) {
+          console.error(error);
+      }
+  };
 
 export const posLogin = async (Objdata) => {
   const objdata = JSON.parse(JSON.stringify(Objdata));
     try {
         const { data } = await axios.post('https://logincliente-niyi2iph7a-uc.a.run.app', {
           cpf: objdata.documento,
+          token:getToken(),
         });
         return data;
     } catch (error) {
@@ -38,7 +49,30 @@ export const getMisCuotas = async (IdP) => {
   }
 };
 
-export const uploadComprobante = async (file, valorpgo,TipoUP) => {
+export const getMisPagos = async (IdC,estado) => {
+  try {
+   const { data } = await axios.post('https://obtenerabonosstatus-niyi2iph7a-uc.a.run.app', {
+    idCliente: IdC,
+    status:estado,
+  });
+  return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getEliComprobante = async (IdF) => {
+  try {
+   const { data } = await axios.post('https://eliminarabonoporid-niyi2iph7a-uc.a.run.app', {
+    idFirebase: IdF,
+  });
+  return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const uploadComprobante = async (file, valorpgo, TipoUP) => {
   const DataEnvio = JSON.parse(await AsyncStorage.getItem('dataPrestamos'));
  if(Number(TipoUP) === 0){
     if(!file || !file.assets || !file.assets[0]){
@@ -67,6 +101,7 @@ export const uploadComprobante = async (file, valorpgo,TipoUP) => {
   const formData = new FormData();
   formData.append('idFuncionario', DataEnvio[0].idfun);
   formData.append('idPrestamo', DataEnvio[0].id);
+  formData.append('idCliente', DataEnvio[0].idcli);
   formData.append('file', fileToUpload);
   formData.append('valor', valorpgo);
 

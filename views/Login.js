@@ -6,6 +6,7 @@ import { TextInput, Button, Text,Card,Title,Paragraph } from 'react-native-paper
 import { useToast } from 'react-native-toast-notifications';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 import NetInfo from '@react-native-community/netinfo';
 import { posLogin } from '../hooks';
 //import {Iconos} from './components/helper';
@@ -120,8 +121,10 @@ const handleSubmit = async () => {
                         }
                         if (Result.status === 'ok'){
                             const {cliente,prestamos} = Result;
+                            //const token = await messaging().getToken();
                              await AsyncStorage.setItem('dataCliente', JSON.stringify(cliente));
                              await AsyncStorage.setItem('dataPrestamos', JSON.stringify(prestamos));
+                             //await AsyncStorage.setItem('dataTokens', token);
                              navigation.navigate('Inicio');
                              setDocumento('');
                              setValinicio(false);

@@ -1,3 +1,4 @@
+/* eslint-disable no-array-constructor */
 import Icono from '@react-native-vector-icons/ionicons';
 
 export const Iconos = ({name,size,color}) => {
@@ -24,4 +25,17 @@ export const formatFecha = (fecha) => {
   var meses = new Array(' ', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
   var fecprocob = dia + ' de ' + meses[mes] + ' de ' + anno;
   return fecprocob;
-    };
+};
+
+ export const formateadaFecha = (fechaString) => {
+const fecha = new Date(fechaString);
+
+    const anio = fecha.getFullYear();
+    const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Sumar 1 al mes y asegurar dos dígitos
+    const dia = String(fecha.getDate()).padStart(2, '0'); // Asegurar dos dígitos
+    const hora = String(fecha.getHours()).padStart(2, '0');
+    const minutos = String(fecha.getMinutes()).padStart(2, '0');
+    const segundos = String(fecha.getSeconds()).padStart(2, '0');
+    const fechaFormateada = `${hora}:${minutos}:${segundos}`;
+    return fechaFormateada;
+};

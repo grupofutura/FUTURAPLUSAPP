@@ -3,8 +3,7 @@ import * as React from 'react';
 import {View,ScrollView, SafeAreaView, StyleSheet} from 'react-native';
 import {Chip } from 'react-native-paper';
 const ListarCredito = ({ data,onValueChange }) => {
-   return(
-    <View>
+return(<View>
              <SafeAreaView>
                   <ScrollView horizontal>
                   {data.map((item, index) => (
@@ -20,7 +19,7 @@ const ListarCredito = ({ data,onValueChange }) => {
                     </View>))}
                   </ScrollView>
                 </SafeAreaView>
-       </View>)
+       </View>);
 };
 const styles = StyleSheet.create({
     row: {

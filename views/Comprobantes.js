@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, PermissionsAndroid, Platform } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, Image, ScrollView, StyleSheet, Alert } from 'react-native';
 import { TextInput, Text as Texto, Divider, Button, IconButton} from 'react-native-paper';
@@ -8,7 +8,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import ReceiveSharingIntent from 'react-native-receive-sharing-intent';
 import { useToast } from 'react-native-toast-notifications';
 import { uploadComprobante } from '../hooks';
-import { DialogoEnv,DialogoOk } from './components/Dialogos';
+import { DialogoEnv,DialogoValEnv,DialogoOk } from './components/Dialogos';
 import { currencyFormat } from './components/helper';
 import NetInfo from '@react-native-community/netinfo';
 import globalStyles from '../styles/global';
@@ -21,17 +21,28 @@ const Comprobantes = ({ route }) => {
     const [inicioD, setValinicioD] = useState(false);
     const [valorpgo, setValorpgo] = useState(0);
     const [visible, setVisible] = useState(false);
+    const [visibleEnv, setVisibleEnv] = useState(false);
     const [visibleOk, setVisibleOk] = useState(false);
-     const [netInfo, setNetInfo] = useState({});
-     const [tipoup, setTipoup] = useState(0);
-    const { creditos } = route.params;
+    const [netInfo, setNetInfo] = useState({});
+    const [tipoup, setTipoup] = useState(0);
+    const { credito } = route.params;
 
     const navigation = useNavigation();
     // React mensajes toast
     const toast = useToast();
 
+   // async function requestStoragePermission () {
+    const requestStoragePermission = async() => {
+        if (Platform.OS === 'android') {
+            await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
+            );
+        }
+};
+
      useEffect(() => {
-        setDatoscredito(creditos);
+        setDatoscredito(credito);
+        requestStoragePermission();
         //console.log(creditos);
      }, []);
 
@@ -61,24 +72,26 @@ const Comprobantes = ({ route }) => {
             (files) => {
               if (files && files.length > 0) {
                 const [firstFile] = files;
-                const { filePath } = firstFile;
+                const { filePath, weblink } = firstFile;
                 //console.log('Archivos recibidos:', files);
-                setTempUri('file://' + filePath);
+                //setTempUri('file://' + filePath);
+                setTempUri(weblink || 'file://' + filePath);
                 setFile(files);
                 setTipoup(1);
               } else {
                 console.log('No se recibieron archivos.');
               }
-              // Limpia los archivos compartidos después de procesarlos
-              ReceiveSharingIntent.clearReceivedFiles();
             },
             (error) => {
               console.error('Error al recibir archivos:', error);
               // Asegúrate de limpiar aunque ocurra un error
-              ReceiveSharingIntent.clearReceivedFiles();
-            },
-            'ShareMedia'
+              //ReceiveSharingIntent.clearReceivedFiles();
+            }
           );
+          return () => {
+             // Limpia los archivos compartidos después de procesarlos
+            //ReceiveSharingIntent.clearReceivedFiles();
+        };
     },[]);
 
 const handleimagengaleria = () => {
@@ -96,7 +109,7 @@ const handleimagengaleria = () => {
         });
     };
 
-    const handleSubmit = () => {
+    const handleValSubmit = () => {
         if (file === '') {
             toast.show('Selecione el comprobante del pix enviado/Selecione o recibo enviado', {
                 duration: 3000,
@@ -111,6 +124,14 @@ const handleimagengaleria = () => {
             return;
         }
 
+         if (valorpgo > datoscredito[0]?.valorempre) {
+            toast.show('El valor del abono o parcerla no puede ser mayor al saldo pendiente', {
+                 type: 'danger',
+                 duration: 3000,
+            });
+            return;
+        }
+
         if ((netInfo.Connected === false && netInfo.WifiEnabled === false))
             {
              toast.show('Ha ocurrido un Error de conexion intentelo nuevamente', {
@@ -119,7 +140,11 @@ const handleimagengaleria = () => {
              });
              return;
            }
+    setVisibleEnv(true);
+     };
 
+ const handleSubmit = () => {
+        setVisibleEnv(false);
         setVisible(true);
         uploadComprobante(file, valorpgo, tipoup)
              .then(resp => {
@@ -217,7 +242,7 @@ const handleimagengaleria = () => {
                         contentStyle={styles.flexReverse}
                         icon="send"
                         mode="contained"
-                        onPress={() => handleSubmit()}
+                        onPress={() => handleValSubmit()}
                         > {inicioD === false ? 'ENVIAR COMPROBANTE PIX' : 'ENVIANDO...'}
                     </Button>
                 </Text>
@@ -227,6 +252,13 @@ const handleimagengaleria = () => {
           <DialogoEnv
           visible={visible}
           setVisible={setVisible}
+          msg = "Validando Comprobante Pix"
+          />
+          <DialogoValEnv
+          visibleEnv={visibleEnv}
+          setVisibleEnv={setVisibleEnv}
+          valorparcela={datoscredito[0]?.valorparcela}
+          handleSubmit={handleSubmit}
           />
            <DialogoOk
             visibleOk={visibleOk}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "631353695283",
+    "project_id": "futuraproapp",
+    "storage_bucket": "futuraproapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:631353695283:android:f3068a0f79239d22a7d746",
+        "android_client_info": {
+          "package_name": "com.futuraplusapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMRCiGdCe5s592t9oFXZj4mriiXuvyzs8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
